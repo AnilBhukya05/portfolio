@@ -1,0 +1,117 @@
+.experience-section h2 {
+  text-align: center;
+  margin-bottom: 60px;
+  font-size: 32px;
+}
+
+/* GRID */
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* CARD */
+.experience-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 40px 30px;
+  background: linear-gradient(145deg, #111, #1b1b1b);
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+/* Animated border glow */
+.experience-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(120deg, #5f7f99, #7c5cff, #5f7f99);
+  -webkit-mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.experience-card:hover::before {
+  opacity: 1;
+}
+
+/* Lift effect */
+.experience-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* CONTENT */
+.experience-content h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.experience-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+/* TAGS */
+.experience-tags {
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin: 25px auto;         /* auto center block */
+  width: 100%;
+}
+
+.experience-tags span {
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+.experience-card:hover .experience-tags span {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* BUTTON */
+.visit-btn {
+  padding: 8px 18px;
+  border-radius: 25px;
+  border: none;
+  background: #5f7f99;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+    position: relative;
+  z-index: 50;
+}
+
+.visit-btn:hover {
+  background: #7c5cff;
+  transform: translateX(5px);
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+}
