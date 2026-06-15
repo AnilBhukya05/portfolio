@@ -45,6 +45,52 @@
   transform: translateZ(30px);
 }
 
+/* Resume action buttons */
+.resume-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+  transform: translateZ(30px);
+}
+
+.resume-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.download-btn {
+  background: rgba(80, 120, 255, 0.15);
+  color: #9db4ff;
+  border: 1px solid rgba(80, 120, 255, 0.3);
+}
+
+.download-btn:hover {
+  background: rgba(80, 120, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.view-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.view-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
 
 @media (max-width: 480px) {
   .card {
@@ -58,5 +104,15 @@
 
   .card p {
     font-size: 13px;
+  }
+
+  .resume-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .resume-btn {
+    font-size: 12px;
+    padding: 7px 12px;
   }
 }
