@@ -114,7 +114,7 @@ const Projects = forwardRef((_, ref) => {
         </div> */}
 
         <a
-          href="https://github.com/AnilBhukya05/Quiz-App"
+          href="https://anil-react-quiz.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
           className="project-card"

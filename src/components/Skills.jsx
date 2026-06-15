@@ -11,7 +11,6 @@ const Skills = forwardRef((_, ref) => {
 
       <div className="skills-grid">
         <div className="skill-card">Java Programming</div>
-        <div className="skill-card">Python</div>
         <div className="skill-card">HTML5</div>
         <div className="skill-card">CSS3</div>
         <div className="skill-card">JavaScript ES6+</div>
