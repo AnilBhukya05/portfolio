@@ -37,7 +37,7 @@ const Hero = forwardRef((props, ref) => {
       <div className="card">
         <img src={profile} alt="Profile" />
         <h1>Anil Bhukya</h1>
-        <p>Not Just a Developer — A Digital Storyteller!</p>
+        <p>Frontend Developer | React.js Developer!</p>
       </div>
     </section>
   );
