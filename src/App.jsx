@@ -1,45 +1,49 @@
 import { useRef } from "react";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Projects from "./components/Projects";
-import Experience from "./components/Experience";
-import Skills from "./components/Skills";
-import Certificates from "./components/Certificates";
-import Contact from "./components/Contact";
+import AmbientBackground from "./components/AmbientBackground";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Experience from "./pages/Experience";
+import Projects from "./pages/Projects";
+import Skills from "./pages/Skills";
+import Certificates from "./pages/Certificates";
+import Contact from "./pages/Contact";
 
 export default function App() {
-  const heroRef = useRef(null); 
-  const aboutRef = useRef(null);
-  const projectsRef = useRef(null);
-  const experienceRef = useRef(null);
-  const skillsRef = useRef(null);
-  const certificatesRef = useRef(null);
-  const contactRef = useRef(null);
-
-  const scrollTo = (ref) =>
-    ref.current?.scrollIntoView({ behavior: "smooth" });
+  const refs = {
+    home: useRef(null),
+    about: useRef(null),
+    experience: useRef(null),
+    projects: useRef(null),
+    skills: useRef(null),
+    certificates: useRef(null),
+    contact: useRef(null),
+  };
+  const scrollTo = (r) => r.current?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <>
+    <div className="relative min-h-screen overflow-x-hidden">
+      <AmbientBackground />
       <Navbar
-        onHome={() => scrollTo(heroRef)}   
-        onAbout={() => scrollTo(aboutRef)}
-        onProjects={() => scrollTo(projectsRef)}
-        onExperience={() => scrollTo(experienceRef)}
-        onSkills={() => scrollTo(skillsRef)}
-        onCertificates={() => scrollTo(certificatesRef)}
-        onContact={() => scrollTo(contactRef)}
+        onHome={() => scrollTo(refs.home)}
+        onAbout={() => scrollTo(refs.about)}
+        onExperience={() => scrollTo(refs.experience)}
+        onProjects={() => scrollTo(refs.projects)}
+        onSkills={() => scrollTo(refs.skills)}
+        onCertificates={() => scrollTo(refs.certificates)}
+        onContact={() => scrollTo(refs.contact)}
       />
-
-      <Hero ref={heroRef} />   
-
-      <About ref={aboutRef} />
-      <Projects ref={projectsRef} />
-      <Experience ref={experienceRef} />
-      <Skills ref={skillsRef} />
-      <Certificates ref={certificatesRef} />
-      <Contact ref={contactRef} />
-    </>
+      <main className="relative z-10">
+        <Home ref={refs.home} />
+        <About ref={refs.about} />
+        <Experience ref={refs.experience} />
+        <Projects ref={refs.projects} />
+        <Skills ref={refs.skills} />
+        <Certificates ref={refs.certificates} />
+        <Contact ref={refs.contact} />
+      </main>
+      <Footer />
+    </div>
   );
 }
