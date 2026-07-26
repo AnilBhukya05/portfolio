@@ -1,8 +1,9 @@
-import { forwardRef, useRef, useEffect } from "react";
+import { forwardRef, useRef, useEffect, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import HeroScene from "../components/HeroScene";
 import profile from "../assets/profile.webp";
 import resumeFile from "../assets/resume.pdf";
+
+const HeroScene = lazy(() => import("../components/HeroScene"));
 
 const Home = forwardRef((_, ref) => {
   const cardRef = useRef(null);
@@ -33,23 +34,19 @@ const Home = forwardRef((_, ref) => {
       id="home"
       className="relative min-h-screen flex items-center justify-center [perspective:1500px] px-4 overflow-hidden"
     >
-      <HeroScene />
+      <Suspense fallback={null}>
+        <HeroScene />
+      </Suspense>
 
       <motion.div
         ref={cardRef}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-[90%] sm:w-full max-w-[240px] sm:max-w-xs rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10 p-4 sm:p-5 shadow-[0_40px_100px_rgba(0,0,0,0.7)] transition-transform duration-200 [transform-style:preserve-3d] cursor-pointer"
+        className="w-[88%] sm:w-full max-w-[240px] sm:max-w-xs rounded-3xl bg-white/5 backdrop-blur-2xl border border-white/10 p-4 sm:p-5 shadow-[0_40px_100px_rgba(0,0,0,0.7)] transition-transform duration-200 [transform-style:preserve-3d] cursor-pointer"
       >
-        <img
-          src={profile}
-          alt="Anil Bhukya"
-          className="w-full rounded-2xl [transform:translateZ(60px)]"
-        />
-        <h1 className="mt-5 font-display text-2xl font-bold [transform:translateZ(40px)]">
-          Anil Bhukya
-        </h1>
+        <img src={profile} alt="Anil Bhukya" className="w-full rounded-2xl [transform:translateZ(60px)]" />
+        <h1 className="mt-5 font-display text-2xl font-bold [transform:translateZ(40px)]">Anil Bhukya</h1>
         <p className="text-white/60 text-sm mt-1 [transform:translateZ(30px)]">
           Frontend Developer · React.js Developer · Software Engineer
         </p>

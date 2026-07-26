@@ -1,6 +1,5 @@
-import { useRef } from "react";
+import { useRef, Suspense, lazy } from "react";
 import Navbar from "./components/Navbar";
-import AmbientBackground from "./components/AmbientBackground";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -9,6 +8,8 @@ import Projects from "./pages/Projects";
 import Skills from "./pages/Skills";
 import Certificates from "./pages/Certificates";
 import Contact from "./pages/Contact";
+
+const AmbientBackground = lazy(() => import("./components/AmbientBackground"));
 
 export default function App() {
   const refs = {
@@ -24,7 +25,9 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <AmbientBackground />
+      <Suspense fallback={null}>
+        <AmbientBackground />
+      </Suspense>
       <Navbar
         onHome={() => scrollTo(refs.home)}
         onAbout={() => scrollTo(refs.about)}

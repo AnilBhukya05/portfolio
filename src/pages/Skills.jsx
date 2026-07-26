@@ -1,7 +1,8 @@
-import { forwardRef } from "react";
+import { forwardRef, lazy, Suspense } from "react";
 import Reveal from "../components/Reveal";
 import SectionHeading from "../components/SectionHeading";
-import SkillsOrbit from "../components/SkillsOrbit";
+
+const SkillsOrbit = lazy(() => import("../components/SkillsOrbit"));
 
 const LEGEND = [
   { title: "Frontend Development", color: "#4fc3f7" },
@@ -20,7 +21,9 @@ const Skills = forwardRef((_, ref) => (
 
     <Reveal>
       <div className="max-w-4xl mx-auto rounded-3xl border border-white/10 bg-white/[0.02] overflow-hidden">
-        <SkillsOrbit />
+        <Suspense fallback={<div className="h-[340px] sm:h-[420px] md:h-[520px]" />}>
+          <SkillsOrbit />
+        </Suspense>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 px-6 py-6 border-t border-white/5">
           {LEGEND.map((l) => (
             <div key={l.title} className="flex items-center gap-2 text-xs text-white/50 font-mono">
