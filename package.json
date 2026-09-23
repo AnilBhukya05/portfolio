@@ -1,7 +1,7 @@
 {
   "name": "anil-portfolio",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "homepage": "https://anilbhukya05.github.io/Anil-Bhukya-s-Portfolio",
   "scripts": {
@@ -12,12 +12,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.1",
-    "framer-motion": "^12.42.2",
+    "framer-motion": "^12.4.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "three": "^0.185.1"
+    "react-router-dom": "^6.28.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -1,15 +1,9 @@
-export default function SectionHeading({ label, title, subtitle }) {
+export default function SectionHeading({ eyebrow, title, subtitle, align = "left" }) {
   return (
-    <div className="text-center mb-14">
-      {label && (
-        <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-accent">
-          {label}
-        </span>
-      )}
-      <h2 className="font-display text-3xl sm:text-4xl font-bold mt-2">{title}</h2>
-      {subtitle && (
-        <p className="text-white/50 max-w-xl mx-auto mt-3 text-sm">{subtitle}</p>
-      )}
+    <div className={`mb-14 ${align === "center" ? "text-center mx-auto max-w-2xl" : "max-w-2xl"}`}>
+      {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+      <h2 className="font-serif text-3xl sm:text-[40px] leading-tight">{title}</h2>
+      {subtitle && <p className="text-ink2 mt-4 leading-relaxed">{subtitle}</p>}
     </div>
   );
 }

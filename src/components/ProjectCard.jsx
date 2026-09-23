@@ -1,151 +1,40 @@
-import { useState, useEffect } from "react";
-
-export default function ProjectCard({ index, title, description, tags, image, link, reverse }) {
-  const [hover, setHover] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
-
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 800);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
+export default function ProjectCard({ title, description, tags, image, link, index, status }) {
   return (
     <a
       href={link}
       target="_blank"
-      rel="noopener noreferrer"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        display: "flex",
-        flexDirection: isMobile ? "column" : reverse ? "row-reverse" : "row",
-        alignItems: "center",
-        gap: isMobile ? "24px" : "48px",
-        textDecoration: "none",
-        padding: isMobile ? "32px 0" : "48px 0",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
-      }}
+      rel="noreferrer"
+      className="group block rounded-3xl border border-line bg-white/60 overflow-hidden hover:shadow-soft hover:-translate-y-1.5 transition-all duration-500"
     >
-      {/* IMAGE SIDE */}
-      <div
-        style={{
-          flex: "1 1 50%",
-          position: "relative",
-          height: isMobile ? "220px" : "320px",
-          width: "100%",
-          borderRadius: "20px",
-          overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: hover ? "0 30px 60px rgba(0,0,0,0.5)" : "0 8px 20px rgba(0,0,0,0.25)",
-          transform: hover && !isMobile ? "translateY(-8px)" : "translateY(0)",
-          transition: "transform 0.4s ease, box-shadow 0.4s ease",
-        }}
-      >
-        {image && (
-          <img
-            src={image}
-            alt={title}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              filter: hover ? "grayscale(0%)" : "grayscale(55%)",
-              transform: hover ? "scale(1.06)" : "scale(1)",
-              transition: "filter 0.5s ease, transform 0.6s ease",
-            }}
-          />
-        )}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%)",
-          }}
+      <div className="relative h-56 sm:h-64 overflow-hidden">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700 ease-out"
         />
-      </div>
-
-      {/* CONTENT SIDE */}
-      <div style={{ flex: "1 1 50%", width: "100%" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "14px",
-            marginBottom: "14px",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: "13px",
-              letterSpacing: "0.1em",
-              color: "#4fc3f7",
-            }}
-          >
+        {index && (
+          <span className="absolute top-4 left-4 h-8 w-8 rounded-full bg-paper/90 backdrop-blur flex items-center justify-center text-xs font-semibold text-ink/60">
             {index}
           </span>
-          <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.12)" }} />
-        </div>
-
-        <h3
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: isMobile ? "24px" : "30px",
-            fontWeight: 700,
-            color: "#fff",
-            margin: "0 0 12px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-          }}
-        >
-          {title}
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "30px",
-              height: "30px",
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              fontSize: "14px",
-              transform: hover ? "translate(3px,-3px) rotate(45deg)" : "rotate(0deg)",
-              transition: "transform 0.3s ease",
-              flexShrink: 0,
-            }}
-          >
+        )}
+        {status && (
+          <span className="absolute top-4 right-4 px-3 py-1 rounded-full bg-paper/90 backdrop-blur text-[11px] font-medium text-sage flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-sage" />
+            {status}
+          </span>
+        )}
+      </div>
+      <div className="p-6 sm:p-7">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-serif text-xl">{title}</h3>
+          <span className="mt-1 h-8 w-8 shrink-0 rounded-full border border-ink/15 flex items-center justify-center text-sm group-hover:bg-clay group-hover:text-white group-hover:border-clay group-hover:rotate-45 transition-all duration-300">
             ↗
           </span>
-        </h3>
-
-        <p
-          style={{
-            color: "rgba(255,255,255,0.55)",
-            fontSize: "14.5px",
-            lineHeight: 1.7,
-            margin: "0 0 20px",
-            maxWidth: "440px",
-          }}
-        >
-          {description}
-        </p>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+        </div>
+        <p className="text-ink2 text-sm mt-3 leading-relaxed">{description}</p>
+        <div className="flex flex-wrap gap-2 mt-5">
           {(tags || []).map((t) => (
-            <span
-              key={t}
-              style={{
-                fontSize: "11px",
-                fontFamily: "'DM Mono', monospace",
-                letterSpacing: "0.04em",
-                padding: "6px 14px",
-                borderRadius: "20px",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "rgba(255,255,255,0.6)",
-              }}
-            >
+            <span key={t} className="text-[11px] font-medium px-3 py-1 rounded-full bg-paper2 text-ink2">
               {t}
             </span>
           ))}

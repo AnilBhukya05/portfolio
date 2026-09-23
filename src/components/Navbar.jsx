@@ -1,151 +1,244 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import LogoMark from "./LogoMark";
 
-const LINKS = [
-  ["Home", "onHome"],
-  ["About", "onAbout"],
-  ["Experience", "onExperience"],
-  ["Projects", "onProjects"],
-  ["Skills", "onSkills"],
-  ["Certificates", "onCertificates"],
-  ["Contact", "onContact"],
+const PRIMARY = [
+  ["Home", "/"],
+  ["Services", "/services"],
+  ["Work", "/work"],
 ];
 
-export default function Navbar(props) {
+const ABOUT_GROUP = [
+  ["About Me", "/about", "Who I am & how I work"],
+  ["Experience", "/experience", "Where I've worked"],
+  ["Skills", "/skills", "Tools & technologies"],
+  ["Certifications", "/certifications", "Courses & achievements"],
+];
+
+const ABOUT_PATHS = ABOUT_GROUP.map(([, to]) => to);
+
+export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const go = (fn) => {
-    fn();
-    setOpen(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const closeTimer = useRef(null);
+  const { pathname } = useLocation();
+
+  const isAboutActive = ABOUT_PATHS.includes(pathname);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+  }, [open]);
+
+  const openAbout = () => {
+    clearTimeout(closeTimer.current);
+    setAboutOpen(true);
+  };
+  const closeAboutDelayed = () => {
+    closeTimer.current = setTimeout(() => setAboutOpen(false), 150);
   };
 
   return (
     <>
-{/* Mobile toggle — asymmetric signature bars */}
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="fixed top-5 left-5 z-[60] h-11 w-11 rounded-full flex items-center justify-center md:hidden transition-all duration-300 group"
-        style={{
-          background: "rgba(15,15,20,0.75)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          backdropFilter: "blur(12px)",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.4)",
-        }}
-      >
-        <div className="relative h-[16px] w-[18px] flex items-center justify-center">
-          <span
-            className="absolute h-[2px] rounded transition-all duration-300 group-hover:w-[18px]"
-            style={{
-              background: "#4fc3f7",
-              width: open ? "18px" : "18px",
-              top: open ? "7px" : "0px",
-              transform: open ? "rotate(45deg)" : "none",
-            }}
-          />
-          <span
-            className="absolute h-[2px] rounded transition-all duration-300 group-hover:w-[18px]"
-            style={{
-              background: "#fff",
-              width: open ? "18px" : "11px",
-              top: "7px",
-              left: open ? "0px" : "0px",
-              opacity: open ? 0 : 1,
-            }}
-          />
-          <span
-            className="absolute h-[2px] rounded transition-all duration-300 group-hover:w-[18px]"
-            style={{
-              background: "#fff",
-              width: open ? "18px" : "14px",
-              top: open ? "7px" : "14px",
-              transform: open ? "rotate(-45deg)" : "none",
-            }}
-          />
-        </div>
-      </button>
+      <div className="fixed top-0 inset-x-0 z-50 px-4 sm:px-6 pt-4">
+        <header
+          className={`max-w-6xl mx-auto rounded-full border transition-all duration-500 ${
+            scrolled
+              ? "border-white/60 bg-paper/60 backdrop-blur-xl shadow-soft"
+              : "border-white/30 bg-paper/35 backdrop-blur-lg"
+          }`}
+          style={{
+            boxShadow: scrolled
+              ? "0 8px 32px rgba(34,31,26,0.10), inset 0 1px 0 rgba(255,255,255,0.5)"
+              : "inset 0 1px 0 rgba(255,255,255,0.35)",
+          }}
+        >
+          <div className="px-5 sm:px-7 h-16 sm:h-[68px] flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
+              <LogoMark size={36} className="text-ink group-hover:text-clay transition-colors duration-300" />
+              <span className="font-semibold tracking-tight">Anil Bhukya</span>
+            </Link>
 
-      {/* Desktop sidebar */}
-      <nav
-        className="hidden md:flex fixed top-8 left-6 z-50 flex-col gap-1 p-3 rounded-2xl"
-        style={{
-          background: "rgba(10,10,14,0.75)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.65)",
-        }}
-      >
-        {LINKS.map(([label, key]) => (
-          <span
-            key={label}
-            onClick={() => go(props[key])}
-            className="group relative pl-6 pr-5 py-2.5 rounded-xl text-sm cursor-pointer transition-all duration-200 hover:translate-x-1"
-            style={{ color: "rgba(255,255,255,0.62)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.background = "rgba(255,255,255,0.07)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "rgba(255,255,255,0.62)";
-              e.currentTarget.style.background = "transparent";
-            }}
-          >
-            <span
-              className="absolute left-3 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-200"
-              style={{ background: "#4fc3f7", boxShadow: "0 0 8px #4fc3f7" }}
-            />
-            {label}
-          </span>
-        ))}
-      </nav>
+            <nav className="hidden lg:flex items-center gap-0.5">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `px-3.5 py-2 rounded-full text-[13.5px] font-medium transition-all duration-200 ${
+                    isActive ? "text-clay bg-white/60" : "text-ink/65 hover:text-ink hover:bg-white/40"
+                  }`
+                }
+              >
+                Home
+              </NavLink>
 
-      {/* Mobile fullscreen menu — numbered list style */}
+              <div className="relative" onMouseEnter={openAbout} onMouseLeave={closeAboutDelayed}>
+                <button
+                  onClick={() => setAboutOpen((o) => !o)}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13.5px] font-medium transition-all duration-200 ${
+                    isAboutActive || aboutOpen ? "text-clay bg-white/60" : "text-ink/65 hover:text-ink hover:bg-white/40"
+                  }`}
+                >
+                  About
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 10 10"
+                    className={`transition-transform duration-200 ${aboutOpen ? "rotate-180" : ""}`}
+                  >
+                    <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+
+                <AnimatePresence>
+                  {aboutOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute top-full left-0 mt-3 w-64 rounded-2xl border border-white/60 bg-paper/70 backdrop-blur-xl shadow-soft p-2 overflow-hidden"
+                    >
+                      {ABOUT_GROUP.map(([label, to, desc]) => (
+                        <NavLink
+                          key={to}
+                          to={to}
+                          onClick={() => setAboutOpen(false)}
+                          className={({ isActive }) =>
+                            `block px-4 py-2.5 rounded-xl transition-colors ${
+                              isActive ? "bg-white/70" : "hover:bg-white/50"
+                            }`
+                          }
+                        >
+                          <p className={`text-sm font-medium ${pathname === to ? "text-clay" : "text-ink"}`}>{label}</p>
+                          <p className="text-ink2 text-xs mt-0.5">{desc}</p>
+                        </NavLink>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {PRIMARY.slice(1).map(([label, to]) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) =>
+                    `px-3.5 py-2 rounded-full text-[13.5px] font-medium transition-all duration-200 ${
+                      isActive ? "text-clay bg-white/60" : "text-ink/65 hover:text-ink hover:bg-white/40"
+                    }`
+                  }
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="hidden lg:block">
+              <Link to="/contact" className="btn-primary !py-2.5 !px-5 !text-[13px]">
+                Start a project →
+              </Link>
+            </div>
+
+            <button
+              onClick={() => setOpen((o) => !o)}
+              className="lg:hidden h-10 w-10 flex flex-col items-center justify-center gap-[5px]"
+              aria-label="Toggle menu"
+            >
+              <span className={`h-[2px] w-6 bg-ink rounded transition-all duration-300 ${open ? "rotate-45 translate-y-[7px]" : ""}`} />
+              <span className={`h-[2px] w-6 bg-ink rounded transition-all duration-300 ${open ? "opacity-0" : ""}`} />
+              <span className={`h-[2px] w-6 bg-ink rounded transition-all duration-300 ${open ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            </button>
+          </div>
+        </header>
+      </div>
+
       <AnimatePresence>
         {open && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setOpen(false)}
-              className="fixed inset-0 z-40 md:hidden"
-              style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(10px)" }}
-            />
-<motion.nav
-              initial={{ clipPath: "circle(4% at 8% 5%)" }}
-              animate={{ clipPath: "circle(150% at 8% 5%)" }}
-              exit={{ clipPath: "circle(4% at 8% 5%)" }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed inset-0 z-50 flex flex-col justify-center px-9 md:hidden"
-              style={{ background: "rgba(8,8,12,0.98)" }}
-            >
-              <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-white/25 mb-7">
-                Menu
-              </span>
-              <div className="flex flex-col">
-                {LINKS.map(([label, key], i) => (
-                  <motion.div
-                    key={label}
-                    initial={{ opacity: 0, x: -14 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.06 * i + 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    onClick={() => go(props[key])}
-                    className="group flex items-center gap-4 py-3 cursor-pointer"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-paper/85 backdrop-blur-xl lg:hidden pt-28 px-8 overflow-y-auto pb-10"
+          >
+            <div className="flex flex-col">
+              <NavLink
+                to="/"
+                end
+                onClick={() => setOpen(false)}
+                className={({ isActive }) => `py-4 border-b border-line text-2xl font-serif ${isActive ? "text-clay" : "text-ink"}`}
+              >
+                Home
+              </NavLink>
+
+              <div className="border-b border-line">
+                <button
+                  onClick={() => setMobileAboutOpen((o) => !o)}
+                  className={`w-full flex items-center justify-between py-4 text-2xl font-serif ${
+                    isAboutActive ? "text-clay" : "text-ink"
+                  }`}
+                >
+                  About
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 10 10"
+                    className={`transition-transform duration-200 ${mobileAboutOpen ? "rotate-180" : ""}`}
                   >
-                    <span className="font-mono text-[11px]" style={{ color: "rgba(79,195,247,0.55)" }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className="font-display text-xl font-medium transition-all duration-200"
-                      style={{ color: "rgba(255,255,255,0.7)" }}
-                      onTouchStart={(e) => (e.currentTarget.style.color = "#4fc3f7")}
+                    <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <AnimatePresence>
+                  {mobileAboutOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
                     >
-                      {label}
-                    </span>
-                  </motion.div>
-                ))}
+                      <div className="flex flex-col pb-4 pl-4">
+                        {ABOUT_GROUP.map(([label, to]) => (
+                          <NavLink
+                            key={to}
+                            to={to}
+                            onClick={() => setOpen(false)}
+                            className={({ isActive }) =>
+                              `py-2.5 text-base ${isActive ? "text-clay font-medium" : "text-ink2"}`
+                            }
+                          >
+                            {label}
+                          </NavLink>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </motion.nav>
-          </>
+
+              {PRIMARY.slice(1).map(([label, to]) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) => `py-4 border-b border-line text-2xl font-serif ${isActive ? "text-clay" : "text-ink"}`}
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </div>
+
+            <Link to="/contact" onClick={() => setOpen(false)} className="btn-primary mt-8 w-full justify-center">
+              Start a project →
+            </Link>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

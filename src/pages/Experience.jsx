@@ -1,6 +1,8 @@
-import { forwardRef } from "react";
+import { useRef, useState, useMemo } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Reveal from "../components/Reveal";
 import SectionHeading from "../components/SectionHeading";
+import resumeFile from "../assets/resume.pdf";
 
 const JOBS = [
   {
@@ -10,6 +12,7 @@ const JOBS = [
     time: "Apr 2026",
     timeEnd: "Present",
     current: true,
+    summary: "Built and shipped a production e-commerce platform end-to-end.",
     points: [
       "Built and shipped a production e-commerce platform with React.js and Tailwind CSS, end-to-end.",
       "Designed a scalable component library for catalogs, navigation and checkout, cutting future dev time.",
@@ -24,6 +27,7 @@ const JOBS = [
     time: "Nov 2025",
     timeEnd: "Feb 2026",
     current: false,
+    summary: "Converted Figma designs into pixel-perfect, accessible React components.",
     points: [
       "Developed responsive React.js interfaces using reusable components and modern JS.",
       "Converted Figma designs into pixel-perfect, accessible UI components.",
@@ -35,84 +39,168 @@ const JOBS = [
   },
 ];
 
-const Experience = forwardRef((_, ref) => (
-  <section ref={ref} id="experience" className="section">
-    <SectionHeading label="Where I've worked" title="Experience" />
+const STATS = [
+  ["9+", "Months of hands-on experience"],
+  ["2", "Companies worked with"],
+  ["1", "Production platform shipped"],
+];
 
-    <div className="max-w-3xl mx-auto relative">
-      {/* Vertical timeline line */}
-      <div className="absolute left-[7px] sm:left-[9px] top-2 bottom-2 w-px bg-gradient-to-b from-accent via-white/15 to-transparent" />
+const ALL_TAGS = [...new Set(JOBS.flatMap((j) => j.tags))];
 
-      <div className="space-y-14">
-        {JOBS.map((job, i) => (
-          <Reveal key={job.company} delay={i * 0.12}>
-            <div className="relative pl-8 sm:pl-10">
-              {/* Node marker */}
-              <span
-                className={`absolute left-0 top-1.5 h-[15px] w-[15px] sm:h-[19px] sm:w-[19px] rounded-full border-2 ${
-                  job.current
-                    ? "bg-accent border-accent shadow-[0_0_16px_rgba(79,195,247,0.7)]"
-                    : "bg-ink border-white/30"
-                }`}
-              />
+function JobCard({ job, i, dimmed }) {
+  const [expanded, setExpanded] = useState(i === 0);
 
-              {/* Date */}
-              <div className="flex items-center gap-2 mb-2 font-mono text-xs text-accent tracking-wide">
-                <span>{job.time}</span>
-                <span className="text-white/25">→</span>
-                <span className={job.current ? "text-green-400" : "text-white/50"}>
-                  {job.timeEnd}
-                </span>
-                {job.current && (
-                  <span className="ml-1 px-2 py-0.5 rounded-full bg-green-400/10 text-green-400 text-[10px] uppercase tracking-widest">
-                    Current
-                  </span>
-                )}
-              </div>
+  return (
+    <Reveal delay={i * 0.1}>
+      <motion.div
+        animate={{ opacity: dimmed ? 0.35 : 1 }}
+        transition={{ duration: 0.25 }}
+        className="relative pl-9 text-left"
+      >
+        <span
+          className={`absolute left-0 top-1.5 h-[15px] w-[15px] rounded-full border-2 ${
+            job.current ? "bg-clay border-clay" : "bg-paper border-ink/25"
+          }`}
+        />
+        <div className="flex items-center gap-2 mb-2 text-xs font-medium text-clay">
+          <span>{job.time}</span>
+          <span className="text-ink/25">→</span>
+          <span className={job.current ? "text-sage" : "text-ink2"}>{job.timeEnd}</span>
+          {job.current && (
+            <span className="ml-1 px-2 py-0.5 rounded-full bg-sage/10 text-sage text-[10px] uppercase tracking-wide">Current</span>
+          )}
+        </div>
 
-              <div className="rounded-2xl bg-gradient-to-br from-white/[0.05] to-white/[0.015] border border-white/10 p-6 sm:p-8 hover:border-accent/40 transition-all duration-300">
-                <h3 className="font-display text-xl font-bold">
+        <div className="rounded-3xl border border-line bg-white/50 p-7 sm:p-8 hover:border-clay/40 transition-colors">
+          <button onClick={() => setExpanded((e) => !e)} className="w-full text-left">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-serif text-xl">
                   {job.role}
-                  {job.type && <span className="text-white/40 font-normal"> · {job.type}</span>}
+                  {job.type && <span className="text-ink2 font-sans text-base font-normal"> · {job.type}</span>}
                 </h3>
-                <p className="text-white/45 text-sm mt-1 mb-5">{job.company}</p>
-
-                <ul className="space-y-2.5 mb-6">
-                  {job.points.map((p) => (
-                    <li key={p} className="flex items-start gap-2.5 text-sm text-white/65 leading-relaxed">
-                      <span className="mt-2 h-1 w-1 rounded-full bg-accent/70 shrink-0" />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  {job.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="text-[11px] font-mono px-3 py-1 rounded-full bg-white/8 border border-white/10 text-white/60"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                  {job.link && (
-                    <a
-                      href={job.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="ml-auto text-xs font-semibold px-4 py-1.5 rounded-full bg-accent text-black hover:bg-accent2 hover:translate-x-1 transition-all"
-                    >
-                      Visit Site →
-                    </a>
-                  )}
-                </div>
+                <p className="text-ink2 text-sm mt-1">{job.company}</p>
               </div>
+              <span
+                className={`h-8 w-8 shrink-0 rounded-full border border-ink/15 flex items-center justify-center text-sm transition-transform duration-300 ${
+                  expanded ? "rotate-45 border-clay text-clay" : "text-ink/40"
+                }`}
+              >
+                +
+              </span>
             </div>
-          </Reveal>
-        ))}
-      </div>
-    </div>
-  </section>
-));
+            {!expanded && <p className="text-ink2 text-sm mt-4 leading-relaxed">{job.summary}</p>}
+          </button>
 
-export default Experience;
+          <div className="grid transition-all duration-300 ease-out" style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}>
+            <div className="overflow-hidden">
+              <ul className="space-y-2.5 mt-5 mb-1">
+                {job.points.map((p) => (
+                  <li key={p} className="flex items-start gap-2.5 text-sm text-ink2 leading-relaxed">
+                    <span className="mt-2 h-1 w-1 rounded-full bg-clay/70 shrink-0" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 mt-5">
+            {job.tags.map((t) => (
+              <span key={t} className="text-[11px] font-medium px-3 py-1 rounded-full bg-paper2 text-ink2">
+                {t}
+              </span>
+            ))}
+            {job.link && (
+              <a
+                href={job.link}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="ml-auto text-xs font-semibold px-4 py-1.5 rounded-full bg-ink text-paper hover:bg-clay transition-colors"
+              >
+                Visit site →
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </Reveal>
+  );
+}
+
+export default function Experience() {
+  const [activeTag, setActiveTag] = useState(null);
+  const trackRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: trackRef, offset: ["start 0.85", "end 0.6"] });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  const isDimmed = (job) => activeTag && !job.tags.includes(activeTag);
+
+  return (
+    <section className="section pt-14 flex flex-col items-center">
+      <SectionHeading eyebrow="Where I've worked" title="Experience" align="center" />
+
+      {/* STATS STRIP */}
+      <Reveal>
+        <div className="grid sm:grid-cols-3 gap-6 mb-14 max-w-3xl mx-auto">
+          {STATS.map(([v, l]) => (
+            <div key={l} className="rounded-2xl border border-line bg-paper2/50 p-5 text-center">
+              <p className="font-serif text-3xl">{v}</p>
+              <p className="text-ink2 text-xs mt-1 leading-snug">{l}</p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* TAG FILTER */}
+      <Reveal delay={0.05}>
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 max-w-3xl mx-auto">
+          <span className="text-xs font-semibold uppercase tracking-wide text-ink/40 mr-1">Filter by stack:</span>
+          {ALL_TAGS.map((t) => (
+            <button
+              key={t}
+              onClick={() => setActiveTag(activeTag === t ? null : t)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                activeTag === t ? "bg-ink text-paper border-ink" : "border-line text-ink2 hover:border-clay hover:text-clay"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* TIMELINE */}
+      <div ref={trackRef} className="w-full max-w-3xl mx-auto relative">
+        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-line" />
+        <motion.div
+          className="absolute left-[7px] top-2 w-px bg-clay origin-top"
+          style={{ height: lineHeight }}
+        />
+        <div className="space-y-10">
+          {JOBS.map((job, i) => (
+            <JobCard key={job.company} job={job} i={i} dimmed={isDimmed(job)} />
+          ))}
+        </div>
+      </div>
+
+      {/* RESUME CTA */}
+      <Reveal>
+        <div className="w-full max-w-3xl mx-auto mt-16 rounded-3xl border border-line bg-ink text-paper p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+          <div>
+            <h3 className="font-serif text-2xl">Want the full picture?</h3>
+            <p className="text-paper/60 text-sm mt-2">Download my resume for the complete rundown of my experience and education.</p>
+          </div>
+          <a
+            href={resumeFile}
+            download="Anil_Bhukya_Resume.pdf"
+            className="btn-primary !bg-paper !text-ink hover:!bg-clay hover:!text-white shrink-0"
+          >
+            Download resume ⭳
+          </a>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
