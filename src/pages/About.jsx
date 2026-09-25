@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import SectionHeading from "../components/SectionHeading";
+import AnimatedCounter from "../components/AnimatedCounter";
+import Magnetic from "../components/Magnetic";
 
 const HIGHLIGHTS = [
   "React.js, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS",
@@ -62,12 +64,18 @@ export default function About() {
                 ))}
               </ul>
               <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-line">
-                {[["8.68", "CGPA / 10"], ["95.22%", "Naukri Young Turks"]].map(([v, l]) => (
-                  <div key={l}>
-                    <p className="font-serif text-2xl">{v}</p>
-                    <p className="text-ink2 text-[11px] mt-1">{l}</p>
-                  </div>
-                ))}
+                <div>
+                  <p className="font-serif text-2xl">
+                    <AnimatedCounter value={8.68} decimals={2} />
+                  </p>
+                  <p className="text-ink2 text-[11px] mt-1">CGPA / 10</p>
+                </div>
+                <div>
+                  <p className="font-serif text-2xl">
+                    <AnimatedCounter value={95.22} decimals={2} suffix="%" />
+                  </p>
+                  <p className="text-ink2 text-[11px] mt-1">Naukri Young Turks</p>
+                </div>
               </div>
             </div>
           </Reveal>
@@ -88,7 +96,9 @@ export default function About() {
         </div>
         <Reveal delay={0.2}>
           <div className="mt-10 text-center">
-            <Link to="/contact" className="btn-primary">Let's talk about your project →</Link>
+            <Magnetic>
+              <Link to="/contact" className="btn-primary">Let's talk about your project →</Link>
+            </Magnetic>
           </div>
         </Reveal>
       </section>

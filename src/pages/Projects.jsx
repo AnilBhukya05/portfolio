@@ -20,6 +20,22 @@ const PROJECTS = [
     status: "Live",
   },
   {
+    title: "E-commerce Platform — Vyomanexgen",
+    description: "End-to-end freelance build for a live e-commerce brand — product catalog, cart, checkout flow and a reusable component system, currently in production.",
+    tags: ["React.js", "Tailwind CSS", "E-commerce", "Freelance"],
+    link: "https://www.cfourindia.com/",
+    category: "Client Work",
+    status: "Confidential client",
+  },
+  {
+    title: "Frontend Development — Skyinten Technologies",
+    description: "Built responsive, pixel-perfect interfaces from Figma designs during a frontend internship, integrating REST APIs for dynamic data rendering.",
+    tags: ["React.js", "Figma-to-Code", "REST API"],
+    link: "https://www.skyinten.com/",
+    category: "Client Work",
+    status: "Internship",
+  },
+  {
     title: "Quiz Application",
     description: "A dynamic quiz app with API-driven questions, category/difficulty filtering, countdown timer, and live score tracking.",
     tags: ["React.js", "Web Design"],
@@ -49,7 +65,7 @@ const PROJECTS = [
 ];
 
 const FEATURED = PROJECTS[0];
-const FILTERS = ["All", "Web App", "Website", "Research"];
+const FILTERS = ["All", "Client Work", "Web App", "Website", "Research"];
 
 function countFor(f) {
   return f === "All" ? PROJECTS.length : PROJECTS.filter((p) => p.category === f).length;
@@ -57,7 +73,11 @@ function countFor(f) {
 
 export default function Projects() {
   const [filter, setFilter] = useState("All");
-  const list = filter === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
+  const isAll = filter === "All";
+  const base = isAll ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
+  // Spotlight only replaces itself out of the grid when we're on "All" — in a
+  // specific filter, JobX Portal shows as a normal card like everything else.
+  const list = isAll ? base.filter((p) => p.title !== FEATURED.title) : base;
 
   return (
     <>
@@ -69,45 +89,47 @@ export default function Projects() {
         />
       </section>
 
-      {/* FEATURED SPOTLIGHT */}
-      <section className="section pt-0 pb-16">
-        <Reveal>
-          <a
-            href={FEATURED.link}
-            target="_blank"
-            rel="noreferrer"
-            className="group grid lg:grid-cols-2 gap-0 rounded-[2rem] border border-line bg-white/60 overflow-hidden hover:shadow-soft transition-all duration-500"
-          >
-            <div className="relative h-64 lg:h-auto overflow-hidden">
-              <img
-                src={FEATURED.image}
-                alt={FEATURED.title}
-                className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
-              />
-              <span className="absolute top-5 left-5 px-3 py-1.5 rounded-full bg-clay text-white text-[11px] font-semibold tracking-wide uppercase">
-                Featured
-              </span>
-            </div>
-            <div className="p-8 sm:p-12 flex flex-col justify-center">
-              <span className="eyebrow">{FEATURED.category}</span>
-              <h3 className="font-serif text-3xl sm:text-4xl leading-tight mb-4 flex items-center gap-3">
-                {FEATURED.title}
-                <span className="h-9 w-9 shrink-0 rounded-full border border-ink/15 flex items-center justify-center text-sm group-hover:bg-clay group-hover:text-white group-hover:border-clay group-hover:rotate-45 transition-all duration-300">
-                  ↗
+      {/* FEATURED SPOTLIGHT — only shown in the unfiltered "All" view */}
+      {isAll && (
+        <section className="section pt-0 pb-16">
+          <Reveal>
+            <a
+              href={FEATURED.link}
+              target="_blank"
+              rel="noreferrer"
+              className="group grid lg:grid-cols-2 gap-0 rounded-[2rem] border border-line bg-white/60 overflow-hidden hover:shadow-soft transition-all duration-500"
+            >
+              <div className="relative h-64 lg:h-auto overflow-hidden">
+                <img
+                  src={FEATURED.image}
+                  alt={FEATURED.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
+                />
+                <span className="absolute top-5 left-5 px-3 py-1.5 rounded-full bg-clay text-white text-[11px] font-semibold tracking-wide uppercase">
+                  Featured
                 </span>
-              </h3>
-              <p className="text-ink2 leading-relaxed mb-6 max-w-md">{FEATURED.description}</p>
-              <div className="flex flex-wrap gap-2">
-                {FEATURED.tags.map((t) => (
-                  <span key={t} className="text-[11px] font-medium px-3 py-1 rounded-full bg-paper2 text-ink2">
-                    {t}
-                  </span>
-                ))}
               </div>
-            </div>
-          </a>
-        </Reveal>
-      </section>
+              <div className="p-8 sm:p-12 flex flex-col justify-center">
+                <span className="eyebrow">{FEATURED.category}</span>
+                <h3 className="font-serif text-3xl sm:text-4xl leading-tight mb-4 flex items-center gap-3">
+                  {FEATURED.title}
+                  <span className="h-9 w-9 shrink-0 rounded-full border border-ink/15 flex items-center justify-center text-sm group-hover:bg-clay group-hover:text-white group-hover:border-clay group-hover:rotate-45 transition-all duration-300">
+                    ↗
+                  </span>
+                </h3>
+                <p className="text-ink2 leading-relaxed mb-6 max-w-md">{FEATURED.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {FEATURED.tags.map((t) => (
+                    <span key={t} className="text-[11px] font-medium px-3 py-1 rounded-full bg-paper2 text-ink2">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </a>
+          </Reveal>
+        </section>
+      )}
 
       {/* FILTERED GRID */}
       <section className="section pt-0">

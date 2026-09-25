@@ -1,7 +1,9 @@
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Reveal from "../components/Reveal";
 import SectionHeading from "../components/SectionHeading";
+import AnimatedCounter from "../components/AnimatedCounter";
+import Magnetic from "../components/Magnetic";
 import resumeFile from "../assets/resume.pdf";
 
 const JOBS = [
@@ -40,9 +42,9 @@ const JOBS = [
 ];
 
 const STATS = [
-  ["9+", "Months of hands-on experience"],
-  ["2", "Companies worked with"],
-  ["1", "Production platform shipped"],
+  { value: 9, suffix: "+", label: "Months of hands-on experience" },
+  { value: 2, suffix: "", label: "Companies worked with" },
+  { value: 1, suffix: "", label: "Production platform shipped" },
 ];
 
 const ALL_TAGS = [...new Set(JOBS.flatMap((j) => j.tags))];
@@ -144,10 +146,12 @@ export default function Experience() {
       {/* STATS STRIP */}
       <Reveal>
         <div className="grid sm:grid-cols-3 gap-6 mb-14 max-w-3xl mx-auto">
-          {STATS.map(([v, l]) => (
-            <div key={l} className="rounded-2xl border border-line bg-paper2/50 p-5 text-center">
-              <p className="font-serif text-3xl">{v}</p>
-              <p className="text-ink2 text-xs mt-1 leading-snug">{l}</p>
+          {STATS.map((s) => (
+            <div key={s.label} className="rounded-2xl border border-line bg-paper2/50 p-5 text-center">
+              <p className="font-serif text-3xl">
+                <AnimatedCounter value={s.value} suffix={s.suffix} />
+              </p>
+              <p className="text-ink2 text-xs mt-1 leading-snug">{s.label}</p>
             </div>
           ))}
         </div>
@@ -192,13 +196,16 @@ export default function Experience() {
             <h3 className="font-serif text-2xl">Want the full picture?</h3>
             <p className="text-paper/60 text-sm mt-2">Download my resume for the complete rundown of my experience and education.</p>
           </div>
-          <a
-            href={resumeFile}
-            download="Anil_Bhukya_Resume.pdf"
-            className="btn-primary !bg-paper !text-ink hover:!bg-clay hover:!text-white shrink-0"
-          >
-            Download resume ⭳
-          </a>
+          <Magnetic strength={0.3}>
+            
+              <a
+              href={resumeFile}
+              download="Anil_Bhukya_Resume.pdf"
+              className="btn-primary !bg-paper !text-ink hover:!bg-clay hover:!text-white shrink-0"
+            >
+              Download resume ↓
+            </a>
+          </Magnetic>
         </div>
       </Reveal>
     </section>

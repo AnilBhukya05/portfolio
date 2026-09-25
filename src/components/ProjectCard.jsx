@@ -1,17 +1,32 @@
+import { Link } from "react-router-dom";
+
+function initialsOf(title) {
+  return title
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+}
+
 export default function ProjectCard({ title, description, tags, image, link, index, status }) {
-  return (
-    <a
-      href={link}
-      target="_blank"
-      rel="noreferrer"
-      className="group block rounded-3xl border border-line bg-white/60 overflow-hidden hover:shadow-soft hover:-translate-y-1.5 transition-all duration-500"
-    >
+  const isInternal = link && link.startsWith("/");
+
+  const content = (
+    <>
       <div className="relative h-56 sm:h-64 overflow-hidden">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700 ease-out"
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700 ease-out"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink to-[#3a352c] group-hover:scale-[1.03] transition-transform duration-700 ease-out">
+            <span className="font-serif italic text-6xl text-paper/15">{initialsOf(title)}</span>
+          </div>
+        )}
         {index && (
           <span className="absolute top-4 left-4 h-8 w-8 rounded-full bg-paper/90 backdrop-blur flex items-center justify-center text-xs font-semibold text-ink/60">
             {index}
@@ -40,6 +55,27 @@ export default function ProjectCard({ title, description, tags, image, link, ind
           ))}
         </div>
       </div>
+    </>
+  );
+
+  const cardClass =
+    "group block rounded-3xl border border-line bg-white/60 overflow-hidden hover:shadow-soft hover:-translate-y-1.5 transition-all duration-500";
+
+  if (!link) {
+    return <div className={cardClass}>{content}</div>;
+  }
+
+  if (isInternal) {
+    return (
+      <Link to={link} className={cardClass}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <a href={link} target="_blank" rel="noreferrer" className={cardClass}>
+      {content}
     </a>
   );
 }
