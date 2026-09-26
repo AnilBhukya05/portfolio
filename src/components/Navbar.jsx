@@ -62,8 +62,15 @@ export default function Navbar() {
           }}
         >
           <div className="px-5 sm:px-7 h-16 sm:h-[68px] flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
-              <LogoMark size={36} className="text-ink group-hover:text-clay transition-colors duration-300" />
+            <Link
+              to="/"
+              className="flex items-center gap-2 group"
+              onClick={() => setOpen(false)}
+            >
+              <LogoMark
+                size={36}
+                className="text-ink group-hover:text-clay transition-colors duration-300"
+              />
               <span className="font-semibold tracking-tight">Anil Bhukya</span>
             </Link>
 
@@ -73,18 +80,26 @@ export default function Navbar() {
                 end
                 className={({ isActive }) =>
                   `px-3.5 py-2 rounded-full text-[13.5px] font-medium transition-all duration-200 ${
-                    isActive ? "text-clay bg-white/60" : "text-ink/65 hover:text-ink hover:bg-white/40"
+                    isActive
+                      ? "text-clay bg-white/60"
+                      : "text-ink/65 hover:text-ink hover:bg-white/40"
                   }`
                 }
               >
                 Home
               </NavLink>
 
-              <div className="relative" onMouseEnter={openAbout} onMouseLeave={closeAboutDelayed}>
+              <div
+                className="relative"
+                onMouseEnter={openAbout}
+                onMouseLeave={closeAboutDelayed}
+              >
                 <button
                   onClick={() => setAboutOpen((o) => !o)}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13.5px] font-medium transition-all duration-200 ${
-                    isAboutActive || aboutOpen ? "text-clay bg-white/60" : "text-ink/65 hover:text-ink hover:bg-white/40"
+                    isAboutActive || aboutOpen
+                      ? "text-clay bg-white/60"
+                      : "text-ink/65 hover:text-ink hover:bg-white/40"
                   }`}
                 >
                   About
@@ -94,7 +109,14 @@ export default function Navbar() {
                     viewBox="0 0 10 10"
                     className={`transition-transform duration-200 ${aboutOpen ? "rotate-180" : ""}`}
                   >
-                    <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M1 3l4 4 4-4"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
 
@@ -118,7 +140,11 @@ export default function Navbar() {
                             }`
                           }
                         >
-                          <p className={`text-sm font-medium ${pathname === to ? "text-clay" : "text-ink"}`}>{label}</p>
+                          <p
+                            className={`text-sm font-medium ${pathname === to ? "text-clay" : "text-ink"}`}
+                          >
+                            {label}
+                          </p>
                           <p className="text-ink2 text-xs mt-0.5">{desc}</p>
                         </NavLink>
                       ))}
@@ -133,7 +159,9 @@ export default function Navbar() {
                   to={to}
                   className={({ isActive }) =>
                     `px-3.5 py-2 rounded-full text-[13.5px] font-medium transition-all duration-200 ${
-                      isActive ? "text-clay bg-white/60" : "text-ink/65 hover:text-ink hover:bg-white/40"
+                      isActive
+                        ? "text-clay bg-white/60"
+                        : "text-ink/65 hover:text-ink hover:bg-white/40"
                     }`
                   }
                 >
@@ -143,20 +171,51 @@ export default function Navbar() {
             </nav>
 
             <div className="hidden lg:block">
-              <Link to="/contact" className="btn-primary !py-2.5 !px-5 !text-[13px]">
+              <Link
+                to="/contact"
+                className="btn-primary !py-2.5 !px-5 !text-[13px]"
+              >
                 Start a project →
               </Link>
             </div>
 
-            <button
+            {/* MOBILE MENU BUTTON — inlined, centered X morph */}
+            <motion.button
               onClick={() => setOpen((o) => !o)}
-              className="lg:hidden h-10 w-10 flex flex-col items-center justify-center gap-[5px]"
               aria-label="Toggle menu"
+              whileTap={{ scale: 0.88 }}
+              className="lg:hidden relative h-10 w-10 flex items-center justify-center"
             >
-              <span className={`h-[2px] w-6 bg-ink rounded transition-all duration-300 ${open ? "rotate-45 translate-y-[7px]" : ""}`} />
-              <span className={`h-[2px] w-6 bg-ink rounded transition-all duration-300 ${open ? "opacity-0" : ""}`} />
-              <span className={`h-[2px] w-6 bg-ink rounded transition-all duration-300 ${open ? "-rotate-45 -translate-y-[7px]" : ""}`} />
-            </button>
+              <span className="relative w-6 h-5">
+                <motion.span
+                  animate={
+                    open
+                      ? { top: 9, width: 20, rotate: 45 }
+                      : { top: 2, width: 24, rotate: 0 }
+                  }
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  className="absolute left-1/2 -translate-x-1/2 h-[2px] rounded-full bg-ink"
+                />
+                <motion.span
+                  animate={
+                    open
+                      ? { opacity: 0, width: 0 }
+                      : { opacity: 1, width: 16, top: 9 }
+                  }
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-1/2 -translate-x-1/2 h-[2px] rounded-full bg-clay"
+                />
+                <motion.span
+                  animate={
+                    open
+                      ? { top: 9, width: 20, rotate: -45 }
+                      : { top: 16, width: 12, rotate: 0 }
+                  }
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  className="absolute left-1/2 -translate-x-1/2 h-[2px] rounded-full bg-ink"
+                />
+              </span>
+            </motion.button>
           </div>
         </header>
       </div>
@@ -174,7 +233,9 @@ export default function Navbar() {
                 to="/"
                 end
                 onClick={() => setOpen(false)}
-                className={({ isActive }) => `py-4 border-b border-line text-2xl font-serif ${isActive ? "text-clay" : "text-ink"}`}
+                className={({ isActive }) =>
+                  `py-4 border-b border-line text-2xl font-serif ${isActive ? "text-clay" : "text-ink"}`
+                }
               >
                 Home
               </NavLink>
@@ -193,7 +254,14 @@ export default function Navbar() {
                     viewBox="0 0 10 10"
                     className={`transition-transform duration-200 ${mobileAboutOpen ? "rotate-180" : ""}`}
                   >
-                    <path d="M1 3l4 4 4-4" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M1 3l4 4 4-4"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
                 <AnimatePresence>
@@ -228,14 +296,20 @@ export default function Navbar() {
                   key={to}
                   to={to}
                   onClick={() => setOpen(false)}
-                  className={({ isActive }) => `py-4 border-b border-line text-2xl font-serif ${isActive ? "text-clay" : "text-ink"}`}
+                  className={({ isActive }) =>
+                    `py-4 border-b border-line text-2xl font-serif ${isActive ? "text-clay" : "text-ink"}`
+                  }
                 >
                   {label}
                 </NavLink>
               ))}
             </div>
 
-            <Link to="/contact" onClick={() => setOpen(false)} className="btn-primary mt-8 w-full justify-center">
+            <Link
+              to="/contact"
+              onClick={() => setOpen(false)}
+              className="btn-primary mt-8 w-full justify-center"
+            >
               Start a project →
             </Link>
           </motion.div>
