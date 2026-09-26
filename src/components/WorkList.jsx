@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 
 export default function WorkList({ items }) {
   const [hovered, setHovered] = useState(null);
+  const [isTouch, setIsTouch] = useState(false);
   const containerRef = useRef(null);
   const lastX = useRef(0);
 
@@ -10,28 +11,58 @@ export default function WorkList({ items }) {
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 300, damping: 30 });
   const springY = useSpring(y, { stiffness: 300, damping: 30 });
-
   const rotate = useMotionValue(0);
   const springRotate = useSpring(rotate, { stiffness: 200, damping: 20 });
 
-  const handleMove = (e) => {
+  useEffect(() => {
+    setIsTouch(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
+
+  const updatePos = (clientX, clientY) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const px = e.clientX - rect.left;
-    const py = e.clientY - rect.top;
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
     x.set(px);
     y.set(py);
-
     const delta = px - lastX.current;
     lastX.current = px;
     rotate.set(Math.max(-18, Math.min(18, delta * 1.4)));
   };
 
+  const handleMouseMove = (e) => {
+    if (isTouch) return;
+    updatePos(e.clientX, e.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    const t = e.touches[0];
+    if (t) updatePos(t.clientX, t.clientY);
+  };
+
+  // Touch UX: first tap on a row reveals the preview; a second tap on the
+  // SAME (already-active) row lets the link actually navigate.
+  const handleRowClick = (e, i) => {
+    if (!isTouch) return;
+    if (hovered !== i) {
+      e.preventDefault();
+      setHovered(i);
+    }
+  };
+
+  const handleRowTouchStart = (e, i) => {
+    if (!isTouch || hovered === i) return;
+    const t = e.touches[0];
+    if (t) updatePos(t.clientX, t.clientY);
+    setHovered(i);
+  };
+
   return (
     <div
       ref={containerRef}
-      onMouseMove={handleMove}
-      onMouseLeave={() => setHovered(null)}
+      onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
+      onMouseLeave={() => !isTouch && setHovered(null)}
       className="relative"
     >
       {items.map((item, i) => (
@@ -40,10 +71,12 @@ export default function WorkList({ items }) {
           href={item.link}
           target="_blank"
           rel="noreferrer"
-          onMouseEnter={() => setHovered(i)}
-          className="group relative flex items-center justify-between gap-6 border-b border-line py-8 sm:py-10"
+          onMouseEnter={() => !isTouch && setHovered(i)}
+          onClick={(e) => handleRowClick(e, i)}
+          onTouchStart={(e) => handleRowTouchStart(e, i)}
+          className="group relative flex items-center justify-between gap-4 sm:gap-6 border-b border-line py-7 sm:py-10 active:scale-[0.99] transition-transform"
         >
-          <div className="flex items-baseline gap-5 min-w-0">
+          <div className="flex items-baseline gap-3 sm:gap-5 min-w-0">
             <span
               className={`font-serif italic text-sm shrink-0 transition-colors duration-300 ${
                 hovered === i ? "text-clay" : "text-ink/30"
@@ -52,7 +85,7 @@ export default function WorkList({ items }) {
               {String(i + 1).padStart(2, "0")}
             </span>
             <h3
-              className={`font-serif text-3xl sm:text-5xl leading-none truncate transition-all duration-300 ${
+              className={`font-serif text-2xl sm:text-5xl leading-none truncate transition-all duration-300 ${
                 hovered === i ? "text-clay translate-x-2" : "text-ink"
               } ${hovered !== null && hovered !== i ? "opacity-30" : "opacity-100"}`}
             >
@@ -69,7 +102,7 @@ export default function WorkList({ items }) {
           </div>
 
           <span
-            className={`h-10 w-10 shrink-0 rounded-full border flex items-center justify-center text-sm transition-all duration-300 ${
+            className={`h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-full border flex items-center justify-center text-sm transition-all duration-300 ${
               hovered === i
                 ? "bg-clay text-white border-clay rotate-45"
                 : "border-ink/15 text-ink/40"
@@ -78,18 +111,19 @@ export default function WorkList({ items }) {
             ↗
           </span>
 
-          {/* mobile fallback preview since there's no cursor to follow */}
-          <div
-            className={`sm:hidden absolute -bottom-1 left-9 right-14 rounded-xl overflow-hidden transition-all duration-300 ${
-              hovered === i ? "h-24 opacity-100 mt-2" : "h-0 opacity-0"
-            }`}
-          >
-            <img src={item.image} alt={item.title} className="w-full h-24 object-cover" />
-          </div>
+          {isTouch && hovered === i && (
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute -bottom-1 right-11 text-[10px] font-medium text-clay"
+            >
+              tap again to open
+            </motion.span>
+          )}
         </a>
       ))}
 
-      {/* FLOATING CURSOR PREVIEW — desktop only */}
+      {/* FLOATING PREVIEW — follows mouse on desktop, follows finger on touch */}
       <AnimatePresence>
         {hovered !== null && (
           <motion.div
@@ -105,7 +139,7 @@ export default function WorkList({ items }) {
               translateX: "-50%",
               translateY: "-50%",
             }}
-            className="hidden sm:block absolute top-0 left-0 w-[260px] h-[190px] rounded-2xl overflow-hidden pointer-events-none shadow-soft border-4 border-white z-20"
+            className="absolute top-0 left-0 w-[190px] h-[140px] sm:w-[260px] sm:h-[190px] rounded-2xl overflow-hidden pointer-events-none shadow-soft border-4 border-white z-20"
           >
             <img
               src={items[hovered].image}
