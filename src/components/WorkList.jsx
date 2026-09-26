@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 
 export default function WorkList({ items }) {
   const [hovered, setHovered] = useState(null);
@@ -95,7 +100,10 @@ export default function WorkList({ items }) {
 
           <div className="hidden sm:flex flex-wrap gap-2 shrink-0">
             {item.tags.slice(0, 2).map((t) => (
-              <span key={t} className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-paper2 text-ink2">
+              <span
+                key={t}
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-paper2 text-ink2"
+              >
                 {t}
               </span>
             ))}
