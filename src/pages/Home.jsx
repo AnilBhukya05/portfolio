@@ -140,10 +140,10 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-x-10 gap-y-4 mt-14 pt-8 border-t border-line">
             <div>
               <p className="font-serif text-3xl">
-                <AnimatedCounter value={9} suffix="+" />
+                <AnimatedCounter value={1} suffix="+" />
               </p>
               <p className="text-ink2 text-xs mt-1 max-w-[130px] leading-snug">
-                Months freelancing & internship
+                Year of hands-on experience
               </p>
             </div>
             <div>
